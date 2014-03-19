@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcproj", "{AE257537-A9CF-4F14-8F4F-7AB9822B719D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "elr_mpl_lib", "lib\lib.vcproj", "{01B60656-C075-493F-A4AF-D0799D8CF6C3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sample", "sample\sample.vcproj", "{AE257537-A9CF-4F14-8F4F-7AB9822B719A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AE257537-A9CF-4F14-8F4F-7AB9822B719D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AE257537-A9CF-4F14-8F4F-7AB9822B719D}.Debug|Win32.Build.0 = Debug|Win32
+		{AE257537-A9CF-4F14-8F4F-7AB9822B719D}.Release|Win32.ActiveCfg = Release|Win32
+		{AE257537-A9CF-4F14-8F4F-7AB9822B719D}.Release|Win32.Build.0 = Release|Win32
+		{01B60656-C075-493F-A4AF-D0799D8CF6C3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{01B60656-C075-493F-A4AF-D0799D8CF6C3}.Debug|Win32.Build.0 = Debug|Win32
+		{01B60656-C075-493F-A4AF-D0799D8CF6C3}.Release|Win32.ActiveCfg = Release|Win32
+		{01B60656-C075-493F-A4AF-D0799D8CF6C3}.Release|Win32.Build.0 = Release|Win32
+		{AE257537-A9CF-4F14-8F4F-7AB9822B719A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AE257537-A9CF-4F14-8F4F-7AB9822B719A}.Debug|Win32.Build.0 = Debug|Win32
+		{AE257537-A9CF-4F14-8F4F-7AB9822B719A}.Release|Win32.ActiveCfg = Release|Win32
+		{AE257537-A9CF-4F14-8F4F-7AB9822B719A}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
