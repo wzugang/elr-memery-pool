@@ -2,7 +2,7 @@ header files is in inc folder.
 source files is in src folder.
 library is compiled to lib folder.
 test program is in test folder.
-a usage sample is in sample folder.
+a usage example is in example folder.
 
 to use it in source code just copy inc and src to your project and include all source files.
 
