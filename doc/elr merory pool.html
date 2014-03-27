@@ -1,0 +1,469 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>elr merory pool</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>Preface</h1>
+<p>Usually, memory allocation of OS is fast, especially the computer has just started. But over time memory fragmentation becomes serious, memory allocation  and access will become more and more slowly. Memory fragmentation caused by the continuously allocate and free memory of different size. </p>
+<img src="memory_fragments.jpg" alt="Memory fragments." />
+<p>When memory fragmentation becomes serious, owing to addresses of memory need by execution sequences are very discrete, MMU (Memory Management Unit, hardware, a part of CPU) triggers missing pages interruption more frequently. This is the cause of slow memory access.</p>
+<p>To find a free memory block that match the size of memory allocation most is becomes hard when memory fragmentation becomes serious. Because OS needs search more free memory blocks to find one of the best size. This is the cause of slow memory allocation.</p>
+<p>The keys to solve the above problems are to avoid memory fragmentation as far as possible and to reduce the memory allocation and freeing. The solution is memory pool.</p>
+<p>For memory pools, to speedup memory allocation is not as important as to speedup memory access. Because memory access is with a running program from beginning to end. Memory allocation is not as often. In the following part, I will introduce a
+memory pool that to reduce memory fragments by allocate a large blocks of memory and to speedup memory allocation by do not really free the allocated memory.</p>
+<h1>Introduce</h1>
+<p>This is a high performance, flexible, cross-platform memory pool published under MIT Licence. It is free for personal or commercial use and had been used in many production environment. </p>
+<p>In the past three years, I engaged in developping computer vision systems for traffic management. In this kind of programs, many large blocks of memory are needed to cache the images from ip camera and process them in real time. If we use malloc or new to allocate every time a large block of memory is needed, as the program running, we found memory allocation becomes more and more slowly and more likely to fail. The program also runs more slowly. </p>
+<p>The reason is memory fragmentation that caused by the continuously allocate and free memory of different size. I found the key to solve the problem, it is memory pool. I investigated memory pool from Apache Portable Runtime. Found that it is a little complex and hard to make it support embedded platform. The most important is that APR is better at creating and destroying memory pool than at allocating and freeing memory in one pool.</p>
+<h1>Implementation</h1>
+<p>Memory is managed with node and slice of this memory pool. Node is a big block of memory, slice is a small block of memory in the node. Each memory block allocated from this memory pool is belong to a slice.</p>
+<img src="memroy_layout.jpg" alt="Memory layout of pool, node and slice." />
+<p>All slices from a memory pool is of the same size, so this memory pool is more like a object pool. But we can implement a more flexible memory pool by use many memory pool instance of different slice size.</p>
+<p>Nodes is linked as list, available slices also linked as list. When allocate memory form the memory pool. It first check whether a free slice is exist. If exist take one. If not, check whether the newly allocated node have never used slices. If have, take a slice form the node. If not, allocate a new node and take a slice from it. When free a memory block, just move it to the head of available slice list.</p>
+<img src="a_pool_structure.jpg" alt="The data structure of a memory pool at runtime." />
+<p>This memory pool is organized in tree structure. When create a memory pool, we can specify its parent memory pool by use a pointer to the parent pool as the first parameter for <i>elr_mpl_create</i> function. When a memory pool is destroyed, its child memory pool also be destroyed. So we do not need destroy the memory pool and its child memory pool when we do not need those memory pools, just destory the parent memory pool. If we do not specify the parent memory pool when create a memory pool, the memory pool`s parent memory pool is the global memory pool, which is created at the first time <i>elr_mpl_init</i> be invoked, and be destoryed at the last time <i>elr_mpl_finalize</i> be invoked. Memory usage of memory pools\' control structure are allocated from the global memory pool. We can see that in this realization of memory pool all memory pool instance is the child or sub-child of the global memory pool. This means all memory pools will be destroyed when the last time <i>elr_mpl_finalize</i> be called. This reduce the chance of memory leak to the minimum degree.</p>
+<img src="pools_structure.jpg" alt="All memory pools are organized in tree structure." />
+<p>This memory pool also support muti-threading using. If we want it works in muti-theading environment, we must implement all the six interfaces defined in file <em>elr_mtx.h</em> and define <em>ELR_USE_THREAD</em>. Fortunately, it is a very easy job, and the implementation on windows platform is already provided.</p>
+<p>When make the windows implementation, I take linux into consideration too. So the <strong>atomic counter(interger) type</strong> (<em>atomic_t</em> of linux, <em>volatile LONG</em> of windows) and <strong>counter value type</strong> (<em>int</em> of linux, <em>LONG</em> of windows) is defined separately. On windows there are not a atomic type, just a <em>LONG</em> illuminated by <em>volatile</em> (<em>volatile LONG</em>). We can make assignment between <em>LONG</em> and <em>volatile LONG</em>. But on linux <strong>atomic counter(interger) type</strong> is defined as follow.</p>
+<pre>
+typedef struct 
+{ 
+    volatile int counter; 
+}atomic_t; 
+</pre>
+<p>Assignment between <em>int</em> and <em>atomic_t</em> is against the C language syntax.</p>
+<h1>Usage</h1>
+<p>The client proto-type of memory pool is defined as follow.</p>
+<pre>
+typedef struct __elr_mpl_t
+{
+	void*  pool; /*!< the actual handler of internal memory pool object. */
+	int    tag; /*!< the identity code of memory pool object. */
+}
+elr_mpl_t,*elr_mpl_ht;
+
+#define ELR_MPL_INITIALIZER   {NULL,0}
+</pre>
+<p>The tag member is the identity code of memory pool instance, which is used for judging whether the <em>elr_mpl_t</em> variable is still valid. This will be explained later.</p>
+<p>This memroy pool has only eight functions.</p>
+<ol>
+<li><em>int elr_mpl_init();</em></li>
+<li><em>elr_mpl_t elr_mpl_create(elr_mpl_ht fpool,size_t obj_size);</em></li>
+<li><em>int  elr_mpl_avail(elr_mpl_ht pool);</em></li>
+<li><em>void* elr_mpl_alloc(elr_mpl_ht pool);</em></li>
+<li><em>size_t elr_mpl_size(void* mem);</em></li>
+<li><em>void elr_mpl_free(void* mem);</em></li>
+<li><em>void elr_mpl_destroy(elr_mpl_ht pool);</em></li>
+<li><em>void elr_mpl_finalize();</em></li>
+</ol>
+<p>Following is explanation form source code file.</p>
+<pre>
+/*! \brief initialize memory pool module.
+ *  \retval zero if failed.
+ *  
+ *  this function can invoke many times in one process.
+ *  bear in mind that one should invoke elr_mpl_finalize 
+ *  the same times as invoke this function in one process
+ *  when the process about to end.
+ */
+int elr_mpl_init();
+
+/*! \brief create a memory pool.
+ *  \param fpool the parent pool of the about to created pool.
+ *  \param obj_size the size of memory block can alloc from the pool.
+ *  \retval NULL if failed.
+ *
+ *  in fact this memory pool is more like object pool.
+ */
+elr_mpl_t elr_mpl_create(elr_mpl_ht fpool,size_t obj_size);
+
+/*! \brief verifies that a memory pool is valid or not.
+ *  \param pool  pointer to a elr_mpl_t type variable.
+ *  \retval zero if invalid.
+ */
+int  elr_mpl_avail(elr_mpl_ht pool);
+
+/*! \brief alloc a memory block from a memory pool.
+ *  \param pool  pointer to a elr_mpl_t type variable.
+ *  \retval NULL if failed.
+ *
+ *  size of the memory block alloced is the second parameter
+ *  of elr_mpl_create when create the pool.
+ */
+void* elr_mpl_alloc(elr_mpl_ht pool);
+
+/*! \brief get the size of a memory block from a memory pool.
+ *  \param mem pointer to a memory block from a memory pool.
+ *  \retval size of the memory block.
+ */
+size_t elr_mpl_size(void* mem);
+
+/*! \brief give back a memory block to it`s from memory pool.
+ */
+void elr_mpl_free(void* mem);
+
+/*! \brief destroy a memory pool and it`s child pools.
+ */
+void elr_mpl_destroy(elr_mpl_ht pool);
+
+/*! \brief finalize memory pool module.
+ * 
+ *  when finalize is finished all memory pools will be destroyed.
+ *  make sure that when finalize is in process all memory pool is not in using.
+ *  so it is recommend that elr_mpl_finalize invoked only in the end of a process.
+ */
+void elr_mpl_finalize();
+</pre> 
+<p>A simple example of usage.</p>
+<pre>
+#include <stdio.h>
+#include <stdlib.h>
+#include "elr_mpl.h"
+
+int main()
+{
+	elr_mpl_t mypool = ELR_MPL_INITIALIZER;
+	elr_mpl_t mysubpool = ELR_MPL_INITIALIZER;
+    void*  mem = NULL; 
+	int    len = 0;
+
+	elr_mpl_init();	
+
+	mypool = elr_mpl_create(NULL,256);
+	printf("%s\n","create a memory pool: mypool.");
+
+	mysubpool = elr_mpl_create(&mypool,128);
+	printf("%s\n","create a sub memory pool of mypool, name is mysubpool.");
+
+	mem = elr_mpl_alloc(&mysubpool);
+	printf("%s\n","alloc a memory block form mysubpool.");
+
+	len = elr_mpl_size(mem);
+	printf("the memory block size is %d.\n",len);
+
+	elr_mpl_free(mem);
+	printf("give back the memory block to mysubpool.\n",len);
+
+	mem = elr_mpl_alloc(&mypool);
+	printf("%s\n","alloc a memory block form mypool.");
+
+	len = elr_mpl_size(mem);
+	printf("the memory block size is %d.\n",len);
+
+	elr_mpl_free(mem);
+	printf("give back the memory block to mypool.\n",len);
+
+	elr_mpl_destroy(&mypool);
+	printf("destroy mypool.\n",len);
+
+	printf("when mypool has destoryed, it`s sub pool, mysubpool, did %s destoryed.\n",
+		elr_mpl_avail(&mysubpool) == 0?"also":"not");
+
+	elr_mpl_finalize();
+
+	getchar();
+	return 0;
+}
+</pre>
+<h1>Keynote</h1>
+<h3>Why need a identity code</h3>
+<p>All memory pools` control sturcture is form the global memory pool. Assume that we have two <em>elr_mpl_t</em> variable point to one memory pool instance, <em>elr_mpl_destroy</em> is called for one of the two <em>elr_mpl_t</em> variable. Then another <em>elr_mpl_create</em> call just reuse the memory of the memory pool instance`s control sturcture. In this case we can still make a successful call of <em>elr_mpl_alloc</em>  for the other <em>elr_mpl_t</em> variable, but we may allocate a memory block of different size. If the size is greater, there may no problem. If the size is smaller, a <em>violate memory access</em> error will occur. </p>
+<p>So I use a integer value to identify every memory slice. Whenever a memory slice is taken form a memory pool or given back to the memory pool, I make an increment to the integer by one. So if the <em>elr_mpl_t</em> variable is point to a valid memory pool, the <em>tag</em> member is equal to the identify value of the memroy slice for the actual handler of internal memory pool object (<em>void*  pool;</em>).</p>
+<h3>File structure</h3>
+<p>This project contains only four files. <em>elr_mpl.h</em> and <em>elr_mpl.c</em> are the core implementation files, <em>elr_mtx.h</em> and <em>elr_mtx.c</em> are for muti-threading support. If you do not need muti-threading support, just add <em>elr_mpl.h</em> and <em>elr_mpl.c</em> to your prject.</p>
+<h1>Evaluation</h1>
+<p>About to add.</p>
+<h1>To do</h1>
+<p>This memory pool had been used in manay production environment and its ability had been proved. Event so, there are still plenty of space for improvement. Now each memory pool has its own mutex object, under many circumstance this is not a must. So there are at least two points need to be improved. First, reduce the consumption of mutex object. Second, make it to be a all-purpose memory pool, like appache memory pool, many regular size memory blocks can be be allocated from it.</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

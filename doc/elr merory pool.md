@@ -2,6 +2,8 @@
 
 Usually, memory allocation of OS is fast, especially the computer has just started. But over time memory fragmentation becomes serious, memory allocation  and access will become more and more slowly. Memory fragmentation caused by the continuously allocate and free memory of different size. 
 
+<img src="memory_fragments.jpg" alt="Memory fragments." />
+
 When memory fragmentation becomes serious, owing to addresses of memory need by execution sequences are very discrete, MMU (Memory Management Unit, hardware, a part of CPU) triggers missing pages interruption more frequently. This is the cause of slow memory access.
 
 To find a free memory block that match the size of memory allocation most is becomes hard when memory fragmentation becomes serious. Because OS needs search more free memory blocks to find one of the best size. This is the cause of slow memory allocation.
@@ -9,11 +11,18 @@ To find a free memory block that match the size of memory allocation most is bec
 The keys to solve the above problems are to avoid memory fragmentation as far as possible and to reduce the memory allocation and freeing. The solution is memory pool.
 
 For memory pools, to speedup memory allocation is not as important as to speedup memory access. Because memory access is with a running program from beginning to end. Memory allocation is not as often. In the following part, I will introduce a
-memory pool that to reduce memory fragments by allocate a large block of memory and to speedup memory allocation by do not really free the allocated memory.
+memory pool that to reduce memory fragments by allocate a large blocks of memory and to speedup memory allocation by do not really free the allocated memory.
+
 
 # Introduce #
 
 This is a high performance, flexible, cross-platform memory pool published under MIT Licence. It is free for personal or commercial use and had been used in many production environment. 
+
+In the past three years, I engaged in developping computer vision systems for traffic management. In this kind of programs, many large blocks of memory are needed to cache the images from ip camera and process them in real time. If we use malloc or new to allocate every time a large block of memory is needed, as the program running, we found memory allocation becomes more and more slowly and more likely to fail. The program also runs more slowly. 
+
+The reason is memory fragmentation that caused by the continuously allocate and free memory of different size. I found the key to solve the problem, it is memory pool. I investigated memory pool from Apache Portable Runtime. Found that it is a little complex and hard to make it support embedded platform. The most important is that APR is better at creating and destroying memory pool than at allocating and freeing memory in one pool.
+
+# Implementation #
 
 Memory is managed with node and slice of this memory pool. Node is a big block of memory, slice is a small block of memory in the node. Each memory block allocated from this memory pool is belong to a slice.
 
@@ -181,15 +190,22 @@ int main()
 }
 </pre>
 
-#Why need a identity code#
+# Keynote  #
+
+### Why need a identity code ###
 
 All memory pools\` control sturcture is form the global memory pool. Assume that we have two *elr\_mpl\_t* variable point to one memory pool instance, *elr\_mpl\_destroy* is called for one of the two *elr\_mpl\_t* variable. Then another *elr\_mpl\_create* call just reuse the memory of the memory pool instance\`s control sturcture. In this case we can still make a successful call of *elr\_mpl\_alloc*  for the other *elr\_mpl\_t* variable, but we may allocate a memory block of different size. If the size is greater, there may no problem. If the size is smaller, a *violate memory access* error will occur. 
 
 So I use a integer value to identify every memory slice. Whenever a memory slice is taken form a memory pool or given back to the memory pool, I make an increment to the integer by one. So if the *elr\_mpl\_t* variable is point to a valid memory pool, the *tag* member is equal to the identify value of the memroy slice for the actual handler of internal memory pool object (*void\*  pool;*).
 
-#File structure#
+
+### File structure ###
 
 This project contains only four files. *elr\_mpl.h* and *elr\_mpl.c* are the core implementation files, *elr\_mtx.h* and *elr\_mtx.c* are for muti-threading support. If you do not need muti-threading support, just add *elr\_mpl.h* and *elr\_mpl.c* to your prject.
+
+# Evaluation #
+
+About to add.
 
 #To do#
 
