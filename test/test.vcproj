@@ -181,10 +181,6 @@
 					RelativePath="..\src\elr_mpl.c"
 					>
 				</File>
-				<File
-					RelativePath="..\src\elr_mtx.c"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="inc"
@@ -193,15 +189,15 @@
 					RelativePath="..\inc\elr_mpl.h"
 					>
 				</File>
-				<File
-					RelativePath="..\inc\elr_mtx.h"
-					>
-				</File>
 			</Filter>
 		</Filter>
 		<Filter
 			Name="test"
 			>
+			<File
+				RelativePath=".\cunit.h"
+				>
+			</File>
 			<File
 				RelativePath=".\test.c"
 				>

@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="sample"
+	Name="example"
 	ProjectGUID="{AE257537-A9CF-4F14-8F4F-7AB9822B719A}"
 	RootNamespace="sample"
 	Keyword="Win32Proj"
@@ -181,10 +181,6 @@
 					RelativePath="..\src\elr_mpl.c"
 					>
 				</File>
-				<File
-					RelativePath="..\src\elr_mtx.c"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="inc"
@@ -193,17 +189,13 @@
 					RelativePath="..\inc\elr_mpl.h"
 					>
 				</File>
-				<File
-					RelativePath="..\inc\elr_mtx.h"
-					>
-				</File>
 			</Filter>
 		</Filter>
 		<Filter
-			Name="sample"
+			Name="example"
 			>
 			<File
-				RelativePath=".\sample.c"
+				RelativePath=".\example.c"
 				>
 			</File>
 		</Filter>

@@ -14,7 +14,7 @@ For memory pools, to speedup memory allocation is not as important as to speedup
 memory pool that to reduce memory fragments by allocate a large blocks of memory and to speedup memory allocation by do not really free the allocated memory.
 
 
-# Introduce #
+# Introduction #
 
 This is a high performance, flexible, cross-platform memory pool published under MIT Licence. It is free for personal or commercial use and had been used in many production environment. 
 
@@ -205,7 +205,222 @@ This project contains only four files. *elr\_mpl.h* and *elr\_mpl.c* are the cor
 
 # Evaluation #
 
-About to add.
+To evaluate this memory pool, I write a test program. In order to simulate the actual situation better, I let memory allocation, memory freeing and memroy access occurred randomly, and memorize total times and total time consumption. Afterward, the result of total time consumption divided by total times is the time consumption for one operation.
+
+The following is my simulation.
+
+<pre>
+/* alloc_size  the memory block size for allocating, access, freeing.*/
+/* alloc_times total times of  memory allocation operation. Need to be initialized to zero. */
+/* alloc_clocks total time consumption of  memory allocation operations. Need to be initialized to zero. */
+/* other parameters ditto.*/
+void mpl_alloc_free_access(size_t alloc_size,
+						   int *alloc_times,
+						   unsigned long *alloc_clocks,
+						   int *free_times,
+						   unsigned long *free_clocks,
+						   int *access_times,
+						   unsigned long *access_clocks)
+{
+	int i = 0, j = 0, ri = 0;
+	unsigned long alloc_clks;
+	unsigned long free_clks;
+	unsigned long access_clks;
+	char *mem_stack[1000];
+	char  stub =  0;
+
+	elr_mpl_t pool = elr_mpl_create(NULL,alloc_size);
+
+	if(elr_mpl_avail(&pool) != 0)
+	{
+		srand((unsigned)time(NULL)); 
+		for (j = 0; j < 1000; j++)
+		{
+			ri = rand()%100;
+			if(ri < 50)
+			{
+				alloc_clks = my_clock();
+				mem_stack[i] = (char*)elr_mpl_alloc(&pool);
+				*alloc_clocks += (my_clock()-alloc_clks);
+				(*alloc_times)++;				
+
+				if(mem_stack[i] != NULL)
+				{
+					stub =  0;
+					access_clks = my_clock();
+					*(mem_stack[i]+(alloc_size-1)) = 0;
+					*access_clocks += (my_clock()-access_clks);
+					(*access_times)++;
+				}
+
+				i++;
+			}
+			else
+			{
+				if (i > 0)
+				{
+					i--;
+					free_clks = my_clock();
+					elr_mpl_free(mem_stack[i]);
+					*free_clocks += (my_clock()-free_clks);
+					(*free_times)++;
+				}
+			}
+		}
+
+		elr_mpl_destroy(&pool);
+	}
+}
+</pre>
+
+It is meaningless to implement the function for simulating as follow. Beacause the memory allocation operation only execute once at the first time of the measurement cycle. All the other memory allocation operation are just node delete operation of the internal free memory blocks list.
+
+<pre>
+//Array-test (Memory Pool): 
+for(unsigned int j = 0; j < TestCount; j++)
+{
+    // ArraySize = 1000
+    char *ptrArray = (char *) g_ptrMemPool->GetMemory(ArraySize)  ;
+    g_ptrMemPool->FreeMemory(ptrArray, ArraySize) ;
+}
+</pre>
+
+<p>
+<a href="http://www.codeproject.com/Articles/27487/Why-to-use-memory-pool-and-how-to-implement-it"> Details of the above code. </a>
+</p>
+
+The following is a measurement result produced on my computer.( Windows XP sp3, AMD Athlon II P340 Dual-Core Processor, 2G memory.)
+
+  <table width="576" border="0" cellpadding="0" cellspacing="0">
+   <tr height="19">
+    <td height="19" width="72" >size</td>
+    <td width="72">alloc</td>
+    <td width="72">alloc_elr</td>
+    <td width="72">free</td>
+    <td width="72">free_elr</td>
+    <td width="72">access</td>
+    <td width="72">access_elr</td>
+   </tr>
+   <tr height="19">
+    <td height="19" align="right">16</td>
+    <td align="right">227.778</td>
+    <td align="right">117.173</td>
+    <td align="right">245.023</td>
+    <td align="right">67.856</td>
+    <td align="right">62.068</td>
+    <td align="right">61.827</td>
+   </tr>
+   <tr height="19">
+    <td height="19" align="right">32</td>
+    <td align="right">214.169</td>
+    <td align="right">75.425</td>
+    <td align="right">239.875</td>
+    <td align="right">65.992</td>
+    <td align="right">62.296</td>
+    <td align="right">61.51</td>
+   </tr>
+   <tr height="19">
+    <td height="19" align="right">64</td>
+    <td align="right">243.302</td>
+    <td align="right">84.609</td>
+    <td align="right">248.748</td>
+    <td align="right">65.89</td>
+    <td align="right">62.127</td>
+    <td align="right">61.474</td>
+   </tr>
+   <tr height="19">
+    <td height="19" align="right">128</td>
+    <td align="right">241.643</td>
+    <td align="right">79.833</td>
+    <td align="right">242.345</td>
+    <td align="right">65.843</td>
+    <td align="right">62.52</td>
+    <td align="right">61.552</td>
+   </tr>
+   <tr height="19">
+    <td height="19" align="right">256</td>
+    <td align="right">238.966</td>
+    <td align="right">103.869</td>
+    <td align="right">241.29</td>
+    <td align="right">65.922</td>
+    <td align="right">63.036</td>
+    <td align="right">61.493</td>
+   </tr>
+   <tr height="19">
+    <td height="19" align="right">512</td>
+    <td align="right">238.108</td>
+    <td align="right">146.14</td>
+    <td align="right">242.172</td>
+    <td align="right">65.86</td>
+    <td align="right">61.909</td>
+    <td align="right">61.535</td>
+   </tr>
+   <tr height="19">
+    <td height="19" align="right">1024</td>
+    <td align="right">338.797</td>
+    <td align="right">138.467</td>
+    <td align="right">351.727</td>
+    <td align="right">65.932</td>
+    <td align="right">64.49</td>
+    <td align="right">61.486</td>
+   </tr>
+   <tr height="19">
+    <td height="19" align="right">2048</td>
+    <td align="right">409.334</td>
+    <td align="right">186.892</td>
+    <td align="right">353.214</td>
+    <td align="right">65.943</td>
+    <td align="right">62.514</td>
+    <td align="right">61.531</td>
+   </tr>
+   <tr height="19">
+    <td height="19" align="right">4096</td>
+    <td align="right">524.18</td>
+    <td align="right">290.163</td>
+    <td align="right">791.648</td>
+    <td align="right">66.21</td>
+    <td align="right">64.514</td>
+    <td align="right">61.524</td>
+   </tr>
+   <tr height="19">
+    <td height="19" align="right">8192</td>
+    <td align="right">1686.29</td>
+    <td align="right">504.569</td>
+    <td align="right">1049.064</td>
+    <td align="right">66.962</td>
+    <td align="right">78.307</td>
+    <td align="right">61.577</td>
+   </tr>
+   <tr height="19">
+    <td height="19" align="right">16384</td>
+    <td align="right">2665.226</td>
+    <td align="right">1146.425</td>
+    <td align="right">1404.958</td>
+    <td align="right">68.29</td>
+    <td align="right">94.467</td>
+    <td align="right">61.586</td>
+   </tr>
+  </table>
+
+*\_elr means operation of elr\_memory\_pool. The integer number form 1 to 11 on X axis represent the following size value.
+<pre>
+{16,32,64,128,256,512,1024,2048,4096,8192,16384};
+</pre>
+<p>
+<img src="memory_allocation.jpg" alt="Memory allocation chart." />
+<img src="memory_freeing.jpg" alt="Memory freeing chart." />
+<img src="memory_access.jpg" alt="Memory access chart." />
+</p>
+For machine with multi core CPU or multi CPUs, this test program should bind to a core to run. Otherwise, time measurement is inaccurate. Because I use CPU ticks after boot as time base.  
+
+<pre>
+unsigned long my_clock()
+{
+     __asm RDTSC
+}
+</pre>
+
+This memory pool will gain better performance than the test result when used in a real program. For real program, memory consumption will becomes stable after a period. By the time there are no memory allocation in OS level, just reuse the memory blocks in memory pools. In the test program, OS level memory allocation always exists.
 
 #To do#
 

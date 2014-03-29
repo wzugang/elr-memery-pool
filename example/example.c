@@ -7,7 +7,7 @@ int main()
 	elr_mpl_t mypool = ELR_MPL_INITIALIZER;
 	elr_mpl_t mysubpool = ELR_MPL_INITIALIZER;
     void*  mem = NULL; 
-	int    len = 0;
+	size_t len = 0;
 
 	elr_mpl_init();	
 

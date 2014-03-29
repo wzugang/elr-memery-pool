@@ -5,7 +5,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "elr_mpl_lib", "lib\lib.vcproj", "{01B60656-C075-493F-A4AF-D0799D8CF6C3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sample", "sample\sample.vcproj", "{AE257537-A9CF-4F14-8F4F-7AB9822B719A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example", "example\example.vcproj", "{AE257537-A9CF-4F14-8F4F-7AB9822B719A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
