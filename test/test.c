@@ -17,6 +17,8 @@ int  test_destory();
 
 int  test_tree_destory();
 
+int  test_mem_alloc();
+
 /* generate memory fragments */
 char *fragment_stack[100000];
 void make_fragments(int mem_size);
@@ -52,13 +54,14 @@ int main()
 	RUN_TEST_BOOLEAN(test_initialzer,"ELR_MPL_INITIALIZER is invalid pool.");
 	RUN_TEST_BOOLEAN(test_destory,"When a pool been destoryed, return value of elr_mpl_avail should be zero.");
     RUN_TEST_BOOLEAN(test_tree_destory,"When a pool been destoryed, its child pool should be also destoryed.");
+    RUN_TEST_BOOLEAN(test_mem_alloc,"Allocate memory of the same size be declared.");
 
-	getch();
+	getchar();
 
 	bench();
 
 	elr_mpl_finalize();
-	getch();
+	getchar();
 	return 0;
 }
 
@@ -74,6 +77,35 @@ int  test_destory()
 	elr_mpl_t pool = elr_mpl_create(NULL,256);
 	elr_mpl_destroy(&pool);
 	return (elr_mpl_avail(&pool) == 0);
+}
+
+int  test_mem_alloc()
+{
+	int i = 0;
+	void* p[128] = {NULL}; 
+	elr_mpl_t pool = elr_mpl_create(NULL,256);
+
+	srand((unsigned)time(NULL)); 
+
+	while(i < 128)
+	{
+		p[i] = elr_mpl_alloc(&pool);
+
+		if(p[i] != NULL)
+			memset(p[i],0,256);
+		i++;
+	}
+
+	do
+	{
+		i--;
+		elr_mpl_free(p[i]);
+		//if(rand()%3 == 0)
+		//	elr_mpl_alloc(&pool);
+	}
+	while(i > 0);
+
+	return 1;
 }
 
 int  test_tree_destory()

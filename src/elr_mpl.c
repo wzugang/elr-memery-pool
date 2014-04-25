@@ -26,6 +26,12 @@ typedef struct __elr_mem_node
     struct __elr_mem_pool       *owner;
     struct __elr_mem_node       *prev;
     struct __elr_mem_node       *next;
+	/*空闲的内存切片链表头*/
+    struct __elr_mem_slice      *free_slice_head;
+	/*空闲的内存切片链表尾*/
+    struct __elr_mem_slice      *free_slice_tail;
+	/*正在使用的slice的数量*/
+    size_t                       using_slice_count;
 	/*使用过的slice的数量*/
     size_t                       used_slice_count;
     char                        *first_avail;
@@ -81,6 +87,8 @@ static long           g_mpl_refs = 0;
 
 /*为内存池申请一个内存节点*/
 void                      _elr_alloc_mem_node(elr_mem_pool *pool);
+/*移除一个未使用的NODE，返回0表示没有移除*/
+int                       _elr_remove_unused_node(elr_mem_node* node);
 /*在内存池的刚刚创建的内存节点中分配一个内存切片*/
 elr_mem_slice*            _elr_slice_from_node(elr_mem_pool *pool);
 /*在内存池中分配一个内存切片，该方法将会调用上述两方法*/
@@ -265,10 +273,28 @@ ELR_MPL_API void  elr_mpl_free(void* mem)
     elr_mtx_lock(&pool->pool_mutex);
 #endif // ELR_USE_THREAD
 	pslice->tag++;
-    pslice->next = pool->first_free_slice;
-    if(pool->first_free_slice != NULL)
-        pool->first_free_slice->prev = pslice;
-    pool->first_free_slice = pslice;
+	pnode->using_slice_count--;
+	if(pnode->free_slice_head == NULL)
+	{
+		pnode->free_slice_head = pslice;
+		pnode->free_slice_tail = pslice;
+		pslice->next = pool->first_free_slice;
+		if(pool->first_free_slice != NULL)
+			pool->first_free_slice->prev = pslice;
+		pool->first_free_slice = pslice;
+	}
+	else
+	{
+		if(!_elr_remove_unused_node(pnode))
+		{
+			pslice->next = pnode->free_slice_tail->next;
+			if(pnode->free_slice_tail->next != NULL)
+				pnode->free_slice_tail->next->prev = pslice;
+			pnode->free_slice_tail->next = pslice;
+			pslice->prev = pnode->free_slice_tail;
+			pnode->free_slice_tail = pslice;
+		}
+	}
 #ifdef ELR_USE_THREAD
     elr_mtx_unlock(&pool->pool_mutex);
 #endif // ELR_USE_THREAD
@@ -360,13 +386,16 @@ void _elr_alloc_mem_node(elr_mem_pool *pool)
     pnode->first_avail = (char*)pnode
 		+ ELR_ALIGN(sizeof(elr_mem_node),sizeof(int));
 
+	pnode->free_slice_head = NULL;
+    pnode->free_slice_tail = NULL;
     pnode->used_slice_count = 0;
+	pnode->using_slice_count = 0;
+	pnode->prev = NULL;
 
     if(pool->first_node == NULL)
     {
         pool->first_node = pnode;
-        pnode->next = NULL;
-		pnode->prev = NULL;
+        pnode->next = NULL;		
     }
     else
     {
@@ -376,6 +405,49 @@ void _elr_alloc_mem_node(elr_mem_pool *pool)
     }
 }
 
+/*移除一个未使用的NODE，返回0表示没有移除*/
+int _elr_remove_unused_node(elr_mem_node* pnode)
+{
+	int  free_node_flag = 0;
+	if(pnode->using_slice_count == 0)
+	{
+		if(pnode->free_slice_tail->next!=NULL)
+		{
+			pnode->free_slice_tail->next->prev = pnode->free_slice_head->prev;
+			free_node_flag = 1;
+		}
+
+		if(pnode->free_slice_head->prev!=NULL)
+		{
+			pnode->free_slice_head->prev->next = pnode->free_slice_tail->next;
+			free_node_flag = 1;
+		}
+		else /*if(pnode->owner->first_free_slice == pnode->free_slice_head)*/
+		{
+			if(free_node_flag)
+				pnode->owner->first_free_slice = pnode->free_slice_tail->next;
+		}
+
+		if(free_node_flag)
+		{
+			if(pnode->prev != NULL)
+				pnode->prev->next = pnode->next;
+			else
+			{
+				pnode->owner->first_node = pnode->next;
+				pnode->next->prev = NULL;
+			}
+
+			if(pnode->next != NULL)
+				pnode->next->prev = pnode->prev;
+
+			free(pnode);
+		}
+	}
+
+	return free_node_flag;
+}
+
 elr_mem_slice* _elr_slice_from_node(elr_mem_pool *pool)
 {
     elr_mem_slice *pslice = NULL;
@@ -383,6 +455,7 @@ elr_mem_slice* _elr_slice_from_node(elr_mem_pool *pool)
     if(pool->newly_alloc_node != NULL)
     {
         pool->newly_alloc_node->used_slice_count++;
+		pool->newly_alloc_node->using_slice_count++;
         pslice = (elr_mem_slice*)pool->newly_alloc_node->first_avail;
 		memset(pslice,0,pool->slice_size);
 		pslice->next = NULL;
@@ -414,10 +487,14 @@ elr_mem_slice* _elr_slice_from_pool(elr_mem_pool* pool)
     if(pool->first_free_slice != NULL)
     {
         pslice = pool->first_free_slice;
+		pslice->node->free_slice_head = pslice->next;
         pool->first_free_slice = pslice->next;
+		if(pool->first_free_slice != NULL)
+			pool->first_free_slice->prev = NULL;
 		pslice->next = NULL;
 		pslice->prev = NULL;
 		pslice->tag++;
+		pslice->node->using_slice_count++;
     }
     else
     {
